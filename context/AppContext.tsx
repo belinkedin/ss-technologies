@@ -49,23 +49,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [employeeLocations, setEmployeeLocations] = useState<Record<string, LocationRecord>>({});
   const [isSharingLocation, setIsSharingLocation] = useState(false);
   const watchIdRef = useRef<number | null>(null);
+  const [isLoadingBills, setIsLoadingBills] = useState(false);
 
-  // Load bills from Google Sheet on mount and poll for updates
+  // Load Bills on Mount and Poll for Updates
   useEffect(() => {
     const loadBills = async () => {
+      setIsLoadingBills(true);
       const { fetchBillsFromSheet } = await import('../services/googleSheetService');
       const fetchedBills = await fetchBillsFromSheet();
-      if (fetchedBills.length > 0) {
+      if (fetchedBills && fetchedBills.length > 0) {
         setBills(fetchedBills);
       }
+      setIsLoadingBills(false);
     };
 
-    loadBills(); // Initial load
+    loadBills();
 
-    // Poll every 30 seconds for real-time sync
-    const interval = setInterval(loadBills, 30000);
+    // Poll every 30 seconds for updates (admin status changes)
+    const pollInterval = setInterval(loadBills, 30000);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(pollInterval);
   }, []);
 
   // Background Location Watcher
@@ -184,9 +187,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const { createBillInSheet, fetchBillsFromSheet } = await import('../services/googleSheetService');
     await createBillInSheet(newBill);
 
-    // Refresh from sheet to ensure consistency
-    const updatedBills = await fetchBillsFromSheet();
-    if (updatedBills.length > 0) setBills(updatedBills);
+    // Refresh bills to ensure sync
+    setTimeout(async () => {
+      const updatedBills = await fetchBillsFromSheet();
+      if (updatedBills && updatedBills.length > 0) {
+        setBills(updatedBills);
+      }
+    }, 1000);
   };
 
   const updateBillStatus = async (billId: string, status: BillStatus) => {
@@ -196,9 +203,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const { updateBillStatusInSheet, fetchBillsFromSheet } = await import('../services/googleSheetService');
     await updateBillStatusInSheet(billId, status);
 
-    // Refresh from sheet to ensure consistency
-    const updatedBills = await fetchBillsFromSheet();
-    if (updatedBills.length > 0) setBills(updatedBills);
+    // Refresh bills to ensure sync
+    setTimeout(async () => {
+      const updatedBills = await fetchBillsFromSheet();
+      if (updatedBills && updatedBills.length > 0) {
+        setBills(updatedBills);
+      }
+    }, 1000);
   };
 
   const requestShiftAction = (type: ShiftRequestType) => {

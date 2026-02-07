@@ -232,17 +232,6 @@ const Login: React.FC = () => {
               >
                 <ShieldCheck size={16} /> {t.adminNode}
               </button>
-              <button
-                onClick={() => {
-                  setActiveRole(UserRole.GUEST);
-                  setEmail('guest@visitor.com');
-                  setPassword('guest');
-                }}
-                className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-500 ${activeRole === UserRole.GUEST ? 'bg-white text-emerald-600 shadow-xl shadow-slate-200/50 border border-slate-100' : 'text-slate-400 hover:text-slate-600'
-                  }`}
-              >
-                <Globe size={16} /> GUEST
-              </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -305,6 +294,33 @@ const Login: React.FC = () => {
                 ) : (
                   <>{t.establishConnection} <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" /></>
                 )}
+              </button>
+
+              <div className="relative my-8">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-slate-100"></div>
+                </div>
+                <div className="relative flex justify-center text-xs">
+                  <span className="px-4 bg-white text-slate-400 font-bold uppercase tracking-widest text-[9px]">Or</span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setEmail('guest@visitor.com');
+                  setPassword('guest');
+                  setTimeout(() => {
+                    const success = login('guest@visitor.com');
+                    if (!success) {
+                      setError('Guest access unavailable');
+                    }
+                  }, 500);
+                }}
+                className="w-full bg-slate-50 text-slate-700 font-black py-5 rounded-[1.5rem] hover:bg-slate-100 transition-all border-2 border-slate-200 flex items-center justify-center gap-3 group text-[10px] uppercase tracking-[0.3em] active:scale-[0.98]"
+              >
+                <Users size={20} className="text-slate-400" />
+                Continue as Guest / Visitor
               </button>
             </form>
 

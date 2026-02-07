@@ -1,8 +1,7 @@
 
 export enum UserRole {
   OWNER = 'OWNER',
-  EMPLOYEE = 'EMPLOYEE',
-  GUEST = 'GUEST'
+  EMPLOYEE = 'EMPLOYEE'
 }
 
 export enum UserStatus {

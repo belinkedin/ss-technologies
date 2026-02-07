@@ -58,19 +58,17 @@ export const fetchBillsFromSheet = async () => {
         // Use GET request to fetch bills from the doGet endpoint
         const response = await fetch(SHEET_URL, {
             method: 'GET',
-            headers: { 'Accept': 'application/json' }
         });
 
         if (!response.ok) {
-            console.error("Failed to fetch bills from sheet");
+            console.error('Failed to fetch bills from sheet');
             return [];
         }
 
         const bills = await response.json();
-        console.log("Fetched bills from sheet:", bills);
         return bills;
     } catch (error) {
-        console.error("Error fetching bills:", error);
+        console.error('Error fetching bills:', error);
         return [];
     }
 }
