@@ -1,0 +1,8 @@
+{
+  "name": "SS Technologies - All-in-One Management",
+  "description": "A comprehensive enterprise solution for employee tracking and business operations by SS Technologies.",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ]
+}
